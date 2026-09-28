@@ -6,6 +6,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState(null);
 
   async function handleSubmit(e) {
@@ -18,7 +19,7 @@ export default function RegisterPage() {
     }
 
     try {
-      await register(email, password);
+      await register(email, password, displayName);
     } catch (err) {
       setError(err.message);
     }
@@ -38,6 +39,21 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-slate-300">
+              Benutzername:
+            </label>
+            <input
+              type="name"
+              id="name"
+              required
+              value={displayName}
+              className="px-4 py-3 rounded-xl bg-slate-950/50 border border-slate-800 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm"
+              placeholder="Benutzername"
+              onChange={(e) => setDisplayName(e.target.value)}
+            />
+          </div>
+
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-slate-300">
               E-Mail
