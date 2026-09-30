@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getTasks } from "../services/tasks";
+import { supabase } from '../lib/supabase'
 
 export function useTasks(boardId) {
   const [tasks, setTasks] = useState([]);
@@ -45,8 +46,28 @@ export function useTasks(boardId) {
         }
       });
 
+      const channel = supabase
+        .channel(`tasks-board-${boardId}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'tasks',
+            filter: `board_id=eq.${boardId}`
+          },
+          () => {
+            getTasks(boardId).then((data) => {
+              if (!ignore) {
+                setTasks(data);
+              }
+            });
+          }
+        )
+
     return () => {
       ignore = true;
+      supabase.removeChannel(channel);
     };
 
   }, [boardId]);
