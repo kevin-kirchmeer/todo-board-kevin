@@ -1,4 +1,6 @@
-import { supabase } from "../lib/supabase";
+import { createClient } from "../lib/supabase";
+
+const supabase = createClient();
 
 export async function getBoards() {
   const { data, error } = await supabase
@@ -13,10 +15,10 @@ export async function getBoards() {
   return data;
 }
 
-export async function createBoard(titel) {
+export async function createBoard(title) {
   const { data, error } = await supabase
     .from("boards")
-    .insert({ titel })
+    .insert({ title })
     .select();
 
   if (error) {
