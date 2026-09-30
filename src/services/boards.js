@@ -4,7 +4,7 @@ export async function getBoards() {
   const { data, error } = await supabase
     .from("boards")
     .select("*")
-    .order("ceated_at", { ascending: false });
+    .order("created_at", { ascending: false });
 
   if (error) {
     throw new Error(error.message);

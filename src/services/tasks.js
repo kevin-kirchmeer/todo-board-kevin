@@ -1,4 +1,6 @@
-import { supabase } from "../lib/supabase";
+import { createClient } from "../lib/supabase";
+
+const supabase = createClient();
 
 export async function getTasks(boardId) {
   const { data, error } = await supabase
@@ -14,10 +16,10 @@ export async function getTasks(boardId) {
   return data;
 }
 
-export async function createTask(board_Id, title) {
+export async function createTask(boardId, title) {
   const { data, error } = await supabase
     .from("tasks")
-    .insert({ board_id: board_Id, title })
+    .insert({ board_id: boardId, title })
     .select();
 
   if (error) {

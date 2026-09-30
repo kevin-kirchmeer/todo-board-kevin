@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { getTasks } from "../services/tasks";
-import { supabase } from '../lib/supabase'
+import { createClient } from '../lib/supabase'
+
+const supabase = createClient();
 
 export function useTasks(boardId) {
   const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(boardId));
   const [error, setError] = useState(null);
+  
 
   const reload = async () => {
     if (!boardId) return;
@@ -33,6 +36,7 @@ export function useTasks(boardId) {
       .then((data) => {
         if (!ignore) {
           setTasks(data);
+          setError(null);
         }
       })
       .catch((error) => {
@@ -64,6 +68,7 @@ export function useTasks(boardId) {
             });
           }
         )
+        .subscribe();
 
     return () => {
       ignore = true;

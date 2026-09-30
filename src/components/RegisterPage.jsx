@@ -46,7 +46,7 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <label
-              htmlFor="email"
+              htmlFor="name"
               className="text-xs font-medium uppercase tracking-wider text-slate-300"
             >
               Benutzername:

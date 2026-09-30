@@ -4,6 +4,7 @@ import RegisterPage from "./components/RegisterPage";
 import { useUser } from "./hooks/useUser";
 import { Routes, Route } from "react-router-dom";
 import { logout } from "./services/auth";
+import { BoardDetail } from "./components/BoardDetail";
 
 export default function App() {
   const user = useUser();
@@ -40,7 +41,7 @@ export default function App() {
       </div>
 
       <div className="w-full max-w-4xl text-center text-slate-500 border border-dashed border-slate-800 p-12 rounded-2xl">
-        Dein Todo-Board entsteht hier in den nächsten Schritten...
+        <BoardDetail boardId={1} />
       </div>
     </div>
   );
