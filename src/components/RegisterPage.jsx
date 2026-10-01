@@ -52,7 +52,7 @@ export default function RegisterPage() {
               Benutzername:
             </label>
             <input
-              type="name"
+              type="text"
               id="name"
               required
               value={displayName}

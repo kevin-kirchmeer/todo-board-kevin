@@ -43,6 +43,20 @@ export async function updateTaskStatus(id, status) {
   return data ? data[0] : null;
 }
 
+export async function updateTaskTitle(id, title) {
+  const { data, error } = await supabase
+    .from("tasks")
+    .update({ title })
+    .eq("id", id)
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data ? data[0] : null;
+}
+
 export async function deleteTask(id) {
   const { error } = await supabase.from("tasks").delete().eq("id", id);
 
