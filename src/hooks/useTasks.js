@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getTasks } from "../services/tasks";
-import { createClient } from '../lib/supabase'
+import { createClient } from "../lib/supabase";
 
 const supabase = createClient();
 
@@ -8,7 +8,6 @@ export function useTasks(boardId) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(Boolean(boardId));
   const [error, setError] = useState(null);
-  
 
   const reload = async () => {
     if (!boardId) return;
@@ -50,32 +49,55 @@ export function useTasks(boardId) {
         }
       });
 
-      const channel = supabase
-        .channel(`tasks-board-${boardId}`)
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'tasks',
-            filter: `board_id=eq.${boardId}`
-          },
-          () => {
-            getTasks(boardId).then((data) => {
-              if (!ignore) {
-                setTasks(data);
-              }
-            });
-          }
-        )
-        .subscribe();
+    const channel = supabase
+      .channel(`tasks-board-${boardId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "tasks",
+          filter: `board_id=eq.${boardId}`,
+        },
+        () => {
+          getTasks(boardId).then((data) => {
+            if (!ignore) {
+              setTasks(data);
+            }
+          });
+        },
+      )
+      .subscribe();
 
     return () => {
       ignore = true;
       supabase.removeChannel(channel);
     };
-
   }, [boardId]);
 
-  return { tasks, loading, error, reload };
+  const removeTaskLocal = (id) => {
+    setTasks((prevTasks) => {
+      return prevTasks.filter((task) => task.id !== id);
+    });
+  };
+
+  const updateTaskStatusLocal = (id, newStatus) => {
+    setTasks((prevTasks) => {
+      return prevTasks.map((task) => {
+        if (task.id === id) {
+          return { ...task, status: newStatus };
+        }
+        return task;
+      });
+    });
+  };
+
+  return {
+    tasks,
+    loading,
+    error,
+    reload,
+    removeTaskLocal,
+    updateTaskStatusLocal,
+  };
 }

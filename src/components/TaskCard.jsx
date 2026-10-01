@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
 import { updateTaskStatus, deleteTask, updateTaskTitle } from "../services/tasks";
 
-export function TaskCard({ task }) {
+export function TaskCard({ task, removeTaskLocal, updateTaskStatusLocal }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
 
@@ -18,6 +18,27 @@ export function TaskCard({ task }) {
       console.error("Fehler beim Aktualisieren:", err.message);
     }
   }
+
+  async function handleDelete() {
+    removeTaskLocal(task.id); 
+    
+    try {
+      await deleteTask(task.id);
+    } catch (err) {
+      console.error("Fehler beim Löschen:", err.message);
+    }
+  }
+
+  async function handleStatusUpdate(newStatus) {
+    updateTaskStatusLocal(task.id, newStatus);
+    
+    try {
+      await updateTaskStatus(task.id, newStatus);
+    } catch (err) {
+       console.error("Fehler beim Status-Update:", err.message);
+    }
+  }
+
 
   return (
     <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 flex flex-col gap-3 shadow-sm">
@@ -55,7 +76,7 @@ export function TaskCard({ task }) {
         <div className="flex gap-1">
           {task.status !== "todo" && (
             <button
-              onClick={() => updateTaskStatus(task.id, task.status === "done" ? "doing" : "todo")}
+              onClick={() => handleStatusUpdate(task.status === "done" ? "doing" : "todo")}
               className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all cursor-pointer"
               title="Nach links verschieben"
             >
@@ -64,7 +85,7 @@ export function TaskCard({ task }) {
           )}
           {task.status !== "done" && (
             <button
-              onClick={() => updateTaskStatus(task.id, task.status === "todo" ? "doing" : "done")}
+              onClick={() => handleStatusUpdate(task.status === "todo" ? "doing" : "done")}
               className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all cursor-pointer"
               title="Nach rechts verschieben"
             >
@@ -74,7 +95,7 @@ export function TaskCard({ task }) {
         </div>
 
         <button
-          onClick={() => deleteTask(task.id)}
+          onClick={handleDelete}
           className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all cursor-pointer"
           title="Löschen"
         >
