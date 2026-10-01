@@ -61,7 +61,7 @@ export default function App() {
             onSelectBoard={setSelectedBoardId}
           />
         </div>
-
+ 
         {selectedBoardId ? (
           <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl">
             <BoardDetail boardId={selectedBoardId} />
